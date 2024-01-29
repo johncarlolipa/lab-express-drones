@@ -1,1 +1,14 @@
-<h2>Create a new drone</h2>
+<!-- views/drones/create-form.hbs -->
+<h1>Create a New Drone</h1>
+<form action="/drones/create" method="post">
+  <label for="name">Name:</label>
+  <input type="text" name="name" required>
+
+  <label for="propellers">Propellers:</label>
+  <input type="number" name="propellers" required>
+
+  <label for="maxSpeed">Max Speed (m/s):</label>
+  <input type="number" name="maxSpeed" required>
+
+  <button type="submit">Create Drone</button>
+</form>
