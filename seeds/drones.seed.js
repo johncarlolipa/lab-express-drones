@@ -1,5 +1,4 @@
 // Iteration #1
-// seeds/drones.seeds.js
 const mongoose = require('mongoose');
 const Drone = require('../models/Drone.model');
 
@@ -21,6 +20,5 @@ Drone.create(drones)
     console.error('Error seeding the database:', error);
   })
   .finally(() => {
-    // Close the database connection
     mongoose.connection.close();
   });
