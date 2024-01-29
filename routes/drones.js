@@ -2,14 +2,17 @@ const express = require("express");
 const router = express.Router();
 const Drone = require("../models/Drone.model");
 
+const renderErrorPage = (res, error, statusCode = 500) => {
+  console.error(`Error: ${error.message}`);
+  res.status(statusCode).send("Internal Server Error");
+};
+
 router.get("/drones", async (req, res, next) => {
   try {
-    // Iteration #2: List the drones
     const drones = await Drone.find();
     res.render("drones/list", { drones });
   } catch (error) {
-    console.error("Error retrieving drones:", error);
-    res.status(500).send("Internal Server Error");
+    renderErrorPage(res, error);
   }
 });
 
@@ -31,11 +34,7 @@ router.post("/drones/create", async (req, res, next) => {
 
     res.redirect("/drones");
   } catch (error) {
-    console.error("Error creating a new drone:", error);
-
-    res.render("drones/create-form", {
-      error: "Error creating a new drone. Please try again.",
-    });
+    renderErrorPage(res, error);
   }
 });
 
@@ -45,8 +44,7 @@ router.get("/drones/:id/edit", async (req, res, next) => {
 
     res.render("drones/update-form", { drone });
   } catch (error) {
-    console.error("Error retrieving drone for editing:", error);
-    res.status(404).render("not-found");
+    renderErrorPage(res, error, 404);
   }
 });
 
@@ -56,18 +54,18 @@ router.post("/drones/:id/edit", async (req, res, next) => {
 
     res.redirect("/drones");
   } catch (error) {
-    console.error("Error updating the drone:", error);
-
-    res.render("drones/update-form", {
-      error: "Error updating the drone. Please try again.",
-      drone: req.body,
-    });
+    renderErrorPage(res, error);
   }
 });
 
-router.post("/drones/:id/delete", (req, res, next) => {
-  // Iteration #5: Delete the drone
-  // ... your code here
+router.post("/drones/:id/delete", async (req, res, next) => {
+  try {
+    await Drone.findByIdAndDelete(req.params.id);
+
+    res.redirect("/drones");
+  } catch (error) {
+    renderErrorPage(res, error);
+  }
 });
 
 module.exports = router;
